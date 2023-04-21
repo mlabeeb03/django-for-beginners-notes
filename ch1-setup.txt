@@ -1,0 +1,27 @@
+Go to project folder
+
+Create virtual environment
+python -m venv .venv
+
+Activate virtual environment
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+.\.venv\Scripts\Activate.ps1
+
+Install django
+python -m pip install django~=4.0.0
+
+Create django project
+django-admin startproject django_project .
+
+Folder structure as of now
+├── django_project
+│ ├── __init__.py
+│ ├── asgi.py
+│ ├── settings.py
+│ ├── urls.py
+│ └── wsgi.py
+├── manage.py
+└── .venv/
+
+Run project
+python manage.py runserver

@@ -1,0 +1,26 @@
+Create a new app
+python manage.py startapp pages
+
+Open setting.py in django project and add this to the end of INSTALLED_APPS
+'pages.apps.PagesConfig',
+
+Add this to the views.py file in the pages folder
+from django.http import HttpResponse
+def homePageView(request):
+	return HttpResponse("Hello, World!")
+
+Create a file urls.py in pages folder and add this to it
+from django.urls import path
+from .views import homePageView
+urlpatterns = [
+    path("", homePageView, name="home"),
+]
+
+Add this to urls.py in django_project folder
+from django.urls import path, include
+
+And this in urlpatterns
+path("", include("pages.urls")),
+
+Make requirements.txt with
+pip freeze > requirements.txt
