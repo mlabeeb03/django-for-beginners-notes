@@ -1,0 +1,89 @@
+Create a templates folder where manage.py is
+
+Update settings.py DIRS in TEMPLATES as
+"DIRS": [BASE_DIR / "templates"],
+
+create a home.html file in templates folder
+
+Add this in the pages/views.py file
+from django.views.generic import TemplateView
+class HomePageView(TemplateView):
+	template_name = "home.html"
+
+Update the django_project/urls.py file as
+from django.contrib import admin
+from django.urls import path, include
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include("pages.urls")),
+]
+
+Create a urls.py file in pages folder and add this code
+from django.urls import path
+from .views import HomePageView
+urlpatterns = [
+	path("", HomePageView.as_view(), name="home"),
+]
+
+Create a about.html in templates folder and follow same steps
+
+Create a base.html file in template folder and add the following code
+<header>
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'about' %}">About</a>
+</header>
+{% block content %} {% endblock content %}
+
+Update the home.html file as
+{% extends "base.html" %}
+{% block content %}
+<h1>Homepage</h1>
+{% endblock content %}
+
+Update the about.html file as
+{% extends "base.html" %}
+{% block content %}
+<h1>About page</h1>
+{% endblock content %}
+
+Create tests in pages/test.py as
+
+from django.test import TestCase
+from django.test import SimpleTestCase
+from django.urls import reverse
+
+
+class HomepageTests(SimpleTestCase):
+    def test_url_exists_at_correct_location(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_available_by_name(self):
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_template_name_correct(self):
+        response = self.client.get(reverse("home"))
+        self.assertTemplateUsed(response, "home.html")
+
+    def test_template_content(self):  # new
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "<h1>Homepage</h1>")
+
+
+class AboutpageTests(SimpleTestCase):
+    def test_url_exists_at_correct_location(self):
+        response = self.client.get("/about/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_available_by_name(self):
+        response = self.client.get(reverse("about"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_template_name_correct(self):
+        response = self.client.get(reverse("about"))
+        self.assertTemplateUsed(response, "about.html")
+
+    def test_template_content(self):
+        response = self.client.get(reverse("about"))
+        self.assertContains(response, "<h1>About page</h1>")
